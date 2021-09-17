@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ClientesService, TipoDocumentoService } from "src/app/services";
 import { OtrosService } from "src/app/services/otros.service";
@@ -13,7 +13,7 @@ import swal from "sweetalert2";
 export class ClientesEditComponent implements OnInit {
   prefijoTelefono: any;
 
-  form: any;
+  form: FormGroup;
   id: any;
   titulo: any;
   listaTipoPersona: any[] = [{ codigo: "FISICA" }, { codigo: "JURIDICA" }];
@@ -52,6 +52,18 @@ export class ClientesEditComponent implements OnInit {
       this.listaTipoDoc = res.lista;
       this.nacionalidadService.listarNac().subscribe((resp: any) => {
         this.listaNacionalidades = resp;
+
+        this.service.obtenerRecurso(this.id).subscribe((r: any) => {
+          this.f.nombre.setValue(r.nombre);
+          this.f.apellido.setValue(r.apellido);
+          this.f.fechaNacimiento.setValue(new Date(r.fechaNacimiento));
+          this.f.email.setValue(r.email);
+          this.f.idTipoDocumento.setValue(r.idTipoDocumento.idTipoDocumento);
+          this.f.nacionalidad.setValue(r.nacionalidad);
+          this.seleccionarPrefijo(r.nacionalidad);
+          this.f.documento.setValue(r.documento);
+          this.f.telefono.setValue(r.telefono);
+        });
       });
     });
   }
@@ -128,8 +140,13 @@ export class ClientesEditComponent implements OnInit {
     this.router.navigate(["/clientes"]);
   }
   seleccionarPrefijo(codigo) {
-    console.log("imprimir", codigo);
     let pais = this.listaNacionalidades.find((x) => x.codigo == codigo);
+    console.log(pais);
+
     this.prefijoTelefono = pais.prefijoTelefono;
+  }
+
+  get f() {
+    return this.form.controls;
   }
 }

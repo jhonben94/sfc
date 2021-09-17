@@ -7,7 +7,6 @@ class Cliente {
   nacionalidad: string;
   email: string;
   telefono: string;
-  prefijoTelefono: string;
   fechaNacimiento: any;
   constructor() {}
 }
