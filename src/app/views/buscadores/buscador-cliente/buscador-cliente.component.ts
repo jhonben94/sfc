@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
@@ -7,18 +7,22 @@ import {
   CANTIDAD_PAG_DEFAULT,
   CANTIDAD_PAG_LIST,
   deleteEmptyData,
-} from "../../utils";
+} from "../../../utils";
 import { startWith, switchMap, catchError, map } from "rxjs/operators";
-import { PuntosService } from "src/app/services";
-import { MatDialog } from "@angular/material/dialog";
+import { ClientesService } from "src/app/services";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
 import swal from "sweetalert2";
 import { Router } from "@angular/router";
 @Component({
-  selector: "app-puntos",
-  templateUrl: "./puntos.component.html",
-  styleUrls: ["./puntos.component.css"],
+  selector: "app-buscador-cliente",
+  templateUrl: "./buscador-cliente.component.html",
+  styleUrls: ["./buscador-cliente.component.css"],
 })
-export class PuntosComponent implements OnInit {
+export class BuscadorClienteComponent implements OnInit {
   selectedRow: any;
 
   /**
@@ -57,12 +61,14 @@ export class PuntosComponent implements OnInit {
    * @description Definicion de las columnas a ser visualizadas
    */
   displayedColumns: string[] = [
-    "idPunto",
-    "concepto",
-    "puntosRequeridos",
-    "rangoInicial",
-    "rangoFinal",
-    "accion",
+    "idCliente",
+    "nombre",
+    "apellido",
+    "email",
+    "telefono",
+    "idTipoDocumento",
+    "documento",
+    "fechaNacimiento",
   ];
 
   opcionPagina = CANTIDAD_PAG_LIST;
@@ -72,30 +78,54 @@ export class PuntosComponent implements OnInit {
    */
   listaColumnas: any = [
     {
-      matDef: "idPunto",
-      label: "idPunto",
-      descripcion: "PUNTO",
+      matDef: "idCliente",
+      label: "idCliente",
+      descripcion: "CLIENTE",
     },
     {
-      matDef: "concepto",
-      label: "concepto",
-      descripcion: "CONCEPTO",
+      matDef: "nombre",
+      label: "nombre",
+      descripcion: "NOMBRE",
     },
 
     {
-      matDef: "puntosRequeridos",
-      label: "puntosRequeridos",
-      descripcion: "PUNTOS REQUERIDOS",
+      matDef: "apellido",
+      label: "apellido",
+      descripcion: "APELLIDO",
     },
     {
-      matDef: "rangoInicial",
-      label: "rangoInicial",
-      descripcion: "RANGO INICIAL",
+      matDef: "telefono",
+      label: "telefono",
+      descripcion: "TELÉFONO",
+    },
+
+    {
+      matDef: "email",
+      label: "email",
+      descripcion: "CORREO",
     },
     {
-      matDef: "rangoFinal",
-      label: "rangoFinal",
-      descripcion: "RANGO FINAL",
+      matDef: "telefono",
+      label: "telefono",
+      descripcion: "TELÉFONO",
+    },
+
+    {
+      matDef: "idTipoDocumento",
+      label: "idTipoDocumento",
+      descripcion: "TIPO DOCUMENTO",
+      relacion: true,
+      columnaRelacion: "descripcion",
+    },
+    {
+      matDef: "documento",
+      label: "documento",
+      descripcion: "NRO. DOCUMENTO",
+    },
+    {
+      matDef: "fechaNacimiento",
+      label: "fechaNacimiento",
+      descripcion: "FECHA NAC.",
     },
   ];
   /**
@@ -108,15 +138,22 @@ export class PuntosComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private service: PuntosService,
+    private service: ClientesService,
     public dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    public dialogRef: MatDialogRef<BuscadorClienteComponent>,
+    @Inject(MAT_DIALOG_DATA) public dataModal: any
   ) {
     this.filtrosForm = this.fb.group({
-      concepto: [""],
-      puntosRequeridos: [""],
-      rangoInicial: [""],
-      rangoFinal: [""],
+      descripcion: [""],
+      nombre: [""],
+      apellido: [""],
+      email: [""],
+      telefono: [""],
+      documento: [""],
+      correo: [""],
+      tipoPersona: [""],
+      fechaNacimiento: [""],
     });
   }
 
@@ -167,57 +204,6 @@ export class PuntosComponent implements OnInit {
       .subscribe((data) => (this.data = data));
   }
 
-  agregar(): void {
-    this.router.navigate(["puntos/agregar"]);
-  }
-
-  acciones(data, e) {
-    const id = "idPunto";
-    const actionType = e.target.getAttribute("data-action-type");
-    switch (actionType) {
-      case "activar":
-        break;
-      case "eliminar":
-        swal
-          .fire({
-            title: "Está seguro que desea eliminar el registro?",
-            text: "Esta acción no se podrá revertir!",
-            icon: "warning",
-            showCancelButton: true,
-            customClass: {
-              confirmButton: "btn btn-success",
-              cancelButton: "btn btn-danger",
-            },
-            confirmButtonText: "Eliminar",
-            buttonsStyling: false,
-          })
-          .then((result) => {
-            if (result.value) {
-              this.service.eliminarRecurso(data[id]).subscribe((res) => {
-                swal
-                  .fire({
-                    title: "Éxito!",
-                    text: "El registro fue eliminado correctamente.",
-                    icon: "success",
-                    customClass: {
-                      confirmButton: "btn btn-success",
-                    },
-                    buttonsStyling: false,
-                  })
-                  .then(() => {
-                    this.limpiar();
-                  });
-              });
-            }
-          });
-        break;
-      case "editar":
-        this.router.navigate(["puntos/modificar", data[id]]);
-        break;
-      default:
-        break;
-    }
-  }
   mostrarCampo(row, columna) {
     if (columna.relacion) {
       if (row[columna.label] == null) return "";

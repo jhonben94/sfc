@@ -5,48 +5,55 @@ import {
   ClientesService,
   PuntosService,
   TipoDocumentoService,
+  VencimientoPuntosService,
 } from "src/app/services";
 import { OtrosService } from "src/app/services/otros.service";
-import { formatearFecha } from "src/app/utils";
+import { fechaDatePicker, formatearFecha } from "src/app/utils";
 import swal from "sweetalert2";
 @Component({
-  selector: "app-puntos-edit",
-  templateUrl: "./puntos-edit.component.html",
-  styleUrls: ["./puntos-edit.component.css"],
+  selector: "app-vencimiento-puntos-edit",
+  templateUrl: "./vencimiento-puntos-edit.component.html",
+  styleUrls: ["./vencimiento-puntos-edit.component.css"],
 })
-export class PuntosEditComponent implements OnInit {
+export class VencimientoPuntosEditComponent implements OnInit {
   form: FormGroup;
   id: any;
   titulo: any;
   constructor(
     private fb: FormBuilder,
-    private service: PuntosService,
+    private service: VencimientoPuntosService,
+    private tipoDocumentoService: TipoDocumentoService,
+    private nacionalidadService: OtrosService,
     private route: ActivatedRoute,
     private router: Router
   ) {
     this.form = this.fb.group({
-      concepto: ["", Validators.required],
-      puntosRequeridos: ["", Validators.required],
-      rangoInicial: [""],
-      rangoFinal: [""],
+      fechaInicioValidez: ["", Validators.required],
+      fechaFinValidez: ["", Validators.required],
+      cantDiasDuracion: ["", Validators.required],
     });
   }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get("id");
     if (this.id) {
-      this.titulo = "MODIFICAR CONCEPTO DE PUNTOS";
+      this.titulo = "MODIFICAR VENCIMIENTO DE PUNTOS";
       //obtener datos de la persona.
       // settear en el formulario.
 
       this.service.obtenerRecurso(this.id).subscribe((r: any) => {
-        this.f.concepto.setValue(r.concepto);
-        this.f.rangoInicial.setValue(r.rangoInicial);
-        this.f.rangoFinal.setValue(r.rangoFinal);
-        this.f.puntosRequeridos.setValue(r.puntosRequeridos);
+        console.log(r);
+
+        this.f.fechaInicioValidez.setValue(
+          new Date(fechaDatePicker(r.fechaInicioValidez))
+        );
+        this.f.fechaFinValidez.setValue(
+          new Date(fechaDatePicker(r.fechaFinValidez))
+        );
+        this.f.cantDiasDuracion.setValue(r.cantDiasDuracion);
       });
     } else {
-      this.titulo = "AGREGAR CONCEPTO DE PUNTOS";
+      this.titulo = "AGREGAR VENCIMIENTO DE PUNTOS";
     }
   }
 
@@ -115,7 +122,7 @@ export class PuntosEditComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigate(["/puntos"]);
+    this.router.navigate(["/vencimiento-puntos"]);
   }
 
   get f() {

@@ -9,16 +9,16 @@ import {
   deleteEmptyData,
 } from "../../utils";
 import { startWith, switchMap, catchError, map } from "rxjs/operators";
-import { PuntosService } from "src/app/services";
+import { VencimientoPuntosService } from "src/app/services";
 import { MatDialog } from "@angular/material/dialog";
 import swal from "sweetalert2";
 import { Router } from "@angular/router";
 @Component({
-  selector: "app-puntos",
-  templateUrl: "./puntos.component.html",
-  styleUrls: ["./puntos.component.css"],
+  selector: "app-vencimiento-puntos",
+  templateUrl: "./vencimiento-puntos.component.html",
+  styleUrls: ["./vencimiento-puntos.component.css"],
 })
-export class PuntosComponent implements OnInit {
+export class VencimientoPuntosComponent implements OnInit {
   selectedRow: any;
 
   /**
@@ -57,11 +57,10 @@ export class PuntosComponent implements OnInit {
    * @description Definicion de las columnas a ser visualizadas
    */
   displayedColumns: string[] = [
-    "idPunto",
-    "concepto",
-    "puntosRequeridos",
-    "rangoInicial",
-    "rangoFinal",
+    "idVencimientoPunto",
+    "fechaInicioValidez",
+    "fechaFinValidez",
+    "cantDiasDuracion",
     "accion",
   ];
 
@@ -72,20 +71,20 @@ export class PuntosComponent implements OnInit {
    */
   listaColumnas: any = [
     {
-      matDef: "idPunto",
-      label: "idPunto",
-      descripcion: "PUNTO",
+      matDef: "idVencimientoPunto",
+      label: "idVencimientoPunto",
+      descripcion: "ID",
     },
     {
-      matDef: "concepto",
-      label: "concepto",
-      descripcion: "CONCEPTO",
+      matDef: "fechaInicioValidez",
+      label: "fechaInicioValidez",
+      descripcion: "FECHA INICIO",
     },
 
     {
-      matDef: "puntosRequeridos",
-      label: "puntosRequeridos",
-      descripcion: "PUNTOS REQUERIDOS",
+      matDef: "fechaFinValidez",
+      label: "fechaFinValidez",
+      descripcion: "FECHA FIN",
     },
     {
       matDef: "rangoInicial",
@@ -93,9 +92,9 @@ export class PuntosComponent implements OnInit {
       descripcion: "RANGO INICIAL",
     },
     {
-      matDef: "rangoFinal",
-      label: "rangoFinal",
-      descripcion: "RANGO FINAL",
+      matDef: "cantDiasDuracion",
+      label: "cantDiasDuracion",
+      descripcion: "DURACIÓN EN DÍAS",
     },
   ];
   /**
@@ -108,15 +107,14 @@ export class PuntosComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private service: PuntosService,
+    private service: VencimientoPuntosService,
     public dialog: MatDialog,
     private router: Router
   ) {
     this.filtrosForm = this.fb.group({
-      concepto: [""],
-      puntosRequeridos: [""],
-      rangoInicial: [""],
-      rangoFinal: [""],
+      fechaInicioValidez: [""],
+      fechaFinValidez: [""],
+      cantDiasDuracion: [""],
     });
   }
 
@@ -168,11 +166,11 @@ export class PuntosComponent implements OnInit {
   }
 
   agregar(): void {
-    this.router.navigate(["puntos/agregar"]);
+    this.router.navigate(["vencimiento-puntos/agregar"]);
   }
 
   acciones(data, e) {
-    const id = "idPunto";
+    const id = "idVencimientoPunto";
     const actionType = e.target.getAttribute("data-action-type");
     switch (actionType) {
       case "activar":
@@ -212,7 +210,7 @@ export class PuntosComponent implements OnInit {
           });
         break;
       case "editar":
-        this.router.navigate(["puntos/modificar", data[id]]);
+        this.router.navigate(["vencimiento-puntos/modificar", data[id]]);
         break;
       default:
         break;

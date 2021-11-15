@@ -9,16 +9,17 @@ import {
   deleteEmptyData,
 } from "../../utils";
 import { startWith, switchMap, catchError, map } from "rxjs/operators";
-import { PuntosService } from "src/app/services";
+import { BolsasService, VencimientoPuntosService } from "src/app/services";
 import { MatDialog } from "@angular/material/dialog";
 import swal from "sweetalert2";
 import { Router } from "@angular/router";
+import { BuscadorClienteComponent } from "../buscadores/buscador-cliente/buscador-cliente.component";
 @Component({
-  selector: "app-puntos",
-  templateUrl: "./puntos.component.html",
-  styleUrls: ["./puntos.component.css"],
+  selector: "app-bolsas",
+  templateUrl: "./bolsas.component.html",
+  styleUrls: ["./bolsas.component.css"],
 })
-export class PuntosComponent implements OnInit {
+export class BolsasComponent implements OnInit {
   selectedRow: any;
 
   /**
@@ -57,12 +58,13 @@ export class PuntosComponent implements OnInit {
    * @description Definicion de las columnas a ser visualizadas
    */
   displayedColumns: string[] = [
-    "idPunto",
-    "concepto",
-    "puntosRequeridos",
-    "rangoInicial",
-    "rangoFinal",
-    "accion",
+    "idBolsa",
+    "fechaAsignacion",
+    "fechaCaducidad",
+    "puntajeUtilizado",
+    "saldoPuntos",
+    "montoOperacion",
+    "idCliente",
   ];
 
   opcionPagina = CANTIDAD_PAG_LIST;
@@ -72,30 +74,42 @@ export class PuntosComponent implements OnInit {
    */
   listaColumnas: any = [
     {
-      matDef: "idPunto",
-      label: "idPunto",
-      descripcion: "PUNTO",
+      matDef: "idBolsa",
+      label: "idBolsa",
+      descripcion: "BOLSA",
     },
     {
-      matDef: "concepto",
-      label: "concepto",
-      descripcion: "CONCEPTO",
+      matDef: "fechaAsignacion",
+      label: "fechaAsignacion",
+      descripcion: "FECHA ASIGNACION",
     },
 
     {
-      matDef: "puntosRequeridos",
-      label: "puntosRequeridos",
-      descripcion: "PUNTOS REQUERIDOS",
+      matDef: "fechaCaducidad",
+      label: "fechaCaducidad",
+      descripcion: "FECHA CADUCIDAD",
     },
     {
-      matDef: "rangoInicial",
-      label: "rangoInicial",
-      descripcion: "RANGO INICIAL",
+      matDef: "puntajeUtilizado",
+      label: "puntajeUtilizado",
+      descripcion: "PUNTAJE UTILIZADO",
     },
     {
-      matDef: "rangoFinal",
-      label: "rangoFinal",
-      descripcion: "RANGO FINAL",
+      matDef: "saldoPuntos",
+      label: "saldoPuntos",
+      descripcion: "SALDO",
+    },
+    {
+      matDef: "montoOperacion",
+      label: "montoOperacion",
+      descripcion: "MONTO",
+    },
+    {
+      matDef: "idCliente",
+      label: "idCliente",
+      descripcion: "CLIENTE",
+      relacion: true,
+      columnaRelacion: ["nombre", "apellido"],
     },
   ];
   /**
@@ -108,15 +122,18 @@ export class PuntosComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private service: PuntosService,
+    private service: BolsasService,
     public dialog: MatDialog,
     private router: Router
   ) {
     this.filtrosForm = this.fb.group({
-      concepto: [""],
-      puntosRequeridos: [""],
-      rangoInicial: [""],
-      rangoFinal: [""],
+      fechaAsignacion: [""],
+      fechaCaducidad: [""],
+      puntajeUtilizado: [""],
+      saldoPuntos: [""],
+      montoOperacion: [""],
+      idCliente: [""],
+      nombreCliente: [""],
     });
   }
 
@@ -168,11 +185,11 @@ export class PuntosComponent implements OnInit {
   }
 
   agregar(): void {
-    this.router.navigate(["puntos/agregar"]);
+    this.router.navigate(["vencimiento-puntos/agregar"]);
   }
 
   acciones(data, e) {
-    const id = "idPunto";
+    const id = "idVencimientoPunto";
     const actionType = e.target.getAttribute("data-action-type");
     switch (actionType) {
       case "activar":
@@ -212,7 +229,7 @@ export class PuntosComponent implements OnInit {
           });
         break;
       case "editar":
-        this.router.navigate(["puntos/modificar", data[id]]);
+        this.router.navigate(["vencimiento-puntos/modificar", data[id]]);
         break;
       default:
         break;
@@ -221,6 +238,12 @@ export class PuntosComponent implements OnInit {
   mostrarCampo(row, columna) {
     if (columna.relacion) {
       if (row[columna.label] == null) return "";
+      if (Array.isArray(columna.columnaRelacion)) {
+        return this.multipleColumnas(
+          row[columna.label],
+          columna.columnaRelacion
+        );
+      }
       return row[columna.label][columna.columnaRelacion];
     } else {
       if (typeof columna.estados != "undefined") {
@@ -231,6 +254,15 @@ export class PuntosComponent implements OnInit {
       }
       return row[columna.label];
     }
+  }
+
+  multipleColumnas(valor: any, listaCol: any[]) {
+    let valorRetorno = "";
+    for (let index = 0; index < listaCol.length; index++) {
+      const property = listaCol[index];
+      valorRetorno += valor[property] + " ";
+    }
+    return valorRetorno;
   }
   limpiar() {
     this.filtrosForm.reset();
@@ -251,5 +283,33 @@ export class PuntosComponent implements OnInit {
 
   onRowClicked(row) {
     this.selectedRow = row;
+  }
+
+  buscadores(buscador) {
+    let dialogRef = null;
+    switch (buscador) {
+      case "cliente":
+        dialogRef = this.dialog.open(BuscadorClienteComponent, {
+          data: {
+            title: "Buscador de Clientes",
+          },
+        });
+
+        dialogRef.afterClosed().subscribe((result: any) => {
+          console.log(result);
+          if (result) {
+            this.f.nombreCliente.setValue(
+              result.nombre + " " + result.apellido
+            );
+            this.f.idCliente.setValue(result.idCliente);
+          } else {
+            this.f.nombreEmpleado.setValue(null);
+          }
+        });
+        break;
+
+      default:
+        break;
+    }
   }
 }

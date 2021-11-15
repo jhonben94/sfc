@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-header card-header-primary card-header-icon">
         <div class="card-icon">
-          <i class="material-icons">radio_button_checked</i>
+          <i class="material-icons">date_range</i>
         </div>
         <h4 class="card-title">
           <strong>{{ titulo }}</strong>
@@ -14,23 +14,36 @@
         <div class="card-body">
           <div class="row">
             <div class="col-6">
-              <mat-form-field class="example-full-width">
+              <mat-form-field>
                 <input
-                  type="text"
                   matInput
-                  placeholder="CONCEPTO"
-                  formControlName="concepto"
+                  [matDatepicker]="picker"
+                  placeholder="FECHA INICIO"
+                  formControlName="fechaInicioValidez"
+                  (click)="picker.open()"
                   required
                 />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
-              <mat-form-field class="example-full-width">
+
+              <mat-form-field>
                 <input
-                  type="number"
                   matInput
-                  placeholder="PUNTOS REQUERIDOS"
-                  formControlName="puntosRequeridos"
+                  [matDatepicker]="picker2"
+                  placeholder="FECHA FIN"
+                  formControlName="fechaFinValidez"
+                  (click)="picker2.open()"
                   required
                 />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="picker2"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
               </mat-form-field>
             </div>
             <div class="col-6">
@@ -38,16 +51,9 @@
                 <input
                   type="number"
                   matInput
-                  placeholder="RANGO INICIAL"
-                  formControlName="rangoInicial"
-                />
-              </mat-form-field>
-              <mat-form-field class="example-full-width">
-                <input
-                  type="number"
-                  matInput
-                  placeholder="RANGO FINAL"
-                  formControlName="rangoFinal"
+                  placeholder="DURACIÓN EN DÍAS"
+                  formControlName="cantDiasDuracion"
+                  required
                 />
               </mat-form-field>
             </div>

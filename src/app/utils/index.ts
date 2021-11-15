@@ -50,3 +50,5 @@ export const formatearHora = (hora) => {
   m = checkZero(m);
   return h + ":" + m;
 };
+
+export const fechaDatePicker = (fecha: string) => fecha.replace("-", "/");

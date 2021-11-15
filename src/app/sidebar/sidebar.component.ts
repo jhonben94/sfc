@@ -29,6 +29,24 @@ export const ROUTES: RouteInfo[] = [
     icontype: "people",
   },
   {
+    path: "/puntos",
+    title: "Puntos",
+    type: "link",
+    icontype: "radio_button_checked",
+  },
+  {
+    path: "/vencimiento-puntos",
+    title: "Vencimiento de Puntos",
+    type: "link",
+    icontype: "date_range",
+  },
+  {
+    path: "/bolsas",
+    title: "Bolsas",
+    type: "link",
+    icontype: "work",
+  },
+  /* {
     path: "/dashboard",
     title: "Dashboard",
     type: "link",
@@ -119,7 +137,7 @@ export const ROUTES: RouteInfo[] = [
       { path: "lock", title: "Lock Screen Page", ab: "LSP" },
       { path: "user", title: "User Page", ab: "UP" },
     ],
-  },
+  }, */
 ];
 @Component({
   selector: "app-sidebar-cmp",

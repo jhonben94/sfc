@@ -3,9 +3,9 @@
     <div class="card">
       <div class="card-header card-header-primary card-header-icon">
         <div class="card-icon">
-          <i class="material-icons">radio_button_checked</i>
+          <i class="material-icons">date_range</i>
         </div>
-        <h4 class="card-title"><strong>CONCEPTO DE PUNTOS</strong></h4>
+        <h4 class="card-title"><strong>BOLSA DE PUNTOS</strong></h4>
       </div>
 
       <mat-accordion>
@@ -23,21 +23,34 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-6">
-                  <mat-form-field class="example-full-width">
+                  <mat-form-field>
                     <input
-                      type="text"
                       matInput
-                      placeholder="CONCEPTO"
-                      formControlName="concepto"
+                      [matDatepicker]="picker"
+                      placeholder="FECHA ASIGNACIÓN"
+                      formControlName="fechaAsignacion"
+                      (click)="picker.open()"
                     />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="picker"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
                   </mat-form-field>
-                  <mat-form-field class="example-full-width">
+
+                  <mat-form-field>
                     <input
-                      type="number"
                       matInput
-                      placeholder="PUNTOS REQUERIDOS"
-                      formControlName="puntosRequeridos"
+                      [matDatepicker]="picker2"
+                      placeholder="FECHA CADUCIDAD"
+                      formControlName="fechaCaducidad"
+                      (click)="picker2.open()"
                     />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="picker2"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
                   </mat-form-field>
                 </div>
                 <div class="col-6">
@@ -45,17 +58,28 @@
                     <input
                       type="number"
                       matInput
-                      placeholder="RANGO INICIAL"
-                      formControlName="rangoInicial"
+                      placeholder="PUNTAJE UTILIZADO"
+                      formControlName="puntajeUtilizado"
                     />
                   </mat-form-field>
+
                   <mat-form-field class="example-full-width">
                     <input
-                      type="number"
+                      type="search"
                       matInput
-                      placeholder="RANGO FINAL"
-                      formControlName="rangoFinal"
+                      placeholder="CLIENTE"
+                      formControlName="nombreCliente"
+                      (click)="buscadores('cliente')"
                     />
+                    <button
+                      mat-button
+                      matSuffix
+                      mat-stroked-button
+                      aria-label="search"
+                      (click)="buscadores('cliente')"
+                    >
+                      <mat-icon>search</mat-icon>
+                    </button>
                   </mat-form-field>
                 </div>
               </div>
@@ -104,7 +128,7 @@
           [dataSource]="data"
           class="example-table"
           matSort
-          matSortActive="idPunto"
+          matSortActive="idBolsa"
           matSortDisableClear
           matSortDirection="desc"
         >
@@ -154,10 +178,10 @@
                 >
               </button>
               <!-- <button ngbTooltip="Activar" mat-button>
-                                        <mat-icon color="accent" data-action-type="activar"
-                                          >check_circle</mat-icon
-                                        >
-                                      </button> -->
+                                                        <mat-icon color="accent" data-action-type="activar"
+                                                          >check_circle</mat-icon
+                                                        >
+                                                      </button> -->
             </td>
           </ng-container>
 
