@@ -10,7 +10,7 @@ import {
 } from "../../../utils";
 import { startWith, switchMap, catchError, map } from "rxjs/operators";
 import { BolsasService, VencimientoPuntosService } from "src/app/services";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import swal from "sweetalert2";
 import { Router } from "@angular/router";
 import { BuscadorClienteComponent } from "../../buscadores/buscador-cliente/buscador-cliente.component";
@@ -41,15 +41,16 @@ export class UtilizarPuntosComponent implements OnInit {
   });
 
   constructor(
+    public dialogRef: MatDialogRef<UtilizarPuntosComponent>,
     private fb: FormBuilder,
     private service: BolsasService,
     public dialog: MatDialog,
     private router: Router
   ) {
     this.filtrosForm = this.fb.group({
-      cliente: [""],
+      cliente: ["", Validators.required],
       nombreCliente: [""],
-      concepto: [""],
+      concepto: ["", Validators.required],
       nombreConcepto: [""],
       puntosUtilizados: [""],
     });
@@ -100,7 +101,7 @@ export class UtilizarPuntosComponent implements OnInit {
           console.log(result);
           if (result) {
             this.f.nombreConcepto.setValue(result.descripcionConcepto);
-            this.f.concepto.setValue(result.concepto);
+            this.f.concepto.setValue(result.conceptoPunto);
             this.f.puntosUtilizados.setValue(result.puntosRequeridos);
           } else {
             this.f.nombreConcepto.setValue(null);
@@ -131,7 +132,51 @@ export class UtilizarPuntosComponent implements OnInit {
   }
 
   confirmar() {
-    this.showNotification("top", "center", "danger", "mensaje de texto");
+    const valueFrom = this.filtrosForm.value;
+    const cliente = valueFrom.cliente;
+    const puntosUtilizados = valueFrom.puntosUtilizados;
+    const concepto = valueFrom.concepto;
+    const data = {
+      cliente,
+      puntosUtilizados,
+      concepto,
+    };
+    console.log(data, valueFrom);
+
+    this.service.utilizarPuntos(data).subscribe(
+      (res) => {
+        swal
+          .fire({
+            title: "Éxito!",
+            text:
+              "Se utilizaron correctamente:" +
+              puntosUtilizados +
+              " puntos correctamente.",
+            icon: "success",
+            customClass: {
+              confirmButton: "btn btn-success",
+            },
+            buttonsStyling: false,
+          })
+          .then(() => {
+            this.dialogRef.close();
+            this.filtrosForm.reset();
+          });
+      },
+      (err) => {
+        console.log(err);
+        const data = err.error;
+        swal.fire({
+          title: "Error!",
+          text: data.mensaje,
+          icon: "error",
+          customClass: {
+            confirmButton: "btn btn-info",
+          },
+          buttonsStyling: false,
+        });
+      }
+    );
   }
 
   showNotification(from: any, align: any, type: any, message: any) {

@@ -10,7 +10,7 @@ import {
 } from "../../../utils";
 import { startWith, switchMap, catchError, map } from "rxjs/operators";
 import { BolsasService, VencimientoPuntosService } from "src/app/services";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import swal from "sweetalert2";
 import { Router } from "@angular/router";
 import { BuscadorClienteComponent } from "../../buscadores/buscador-cliente/buscador-cliente.component";
@@ -41,6 +41,7 @@ export class CargarPuntosComponent implements OnInit {
   });
 
   constructor(
+    public dialogRef: MatDialogRef<CargarPuntosComponent>,
     private fb: FormBuilder,
     private service: BolsasService,
     public dialog: MatDialog,
@@ -86,27 +87,6 @@ export class CargarPuntosComponent implements OnInit {
         });
         break;
 
-      case "concepto":
-        dialogRef = this.dialog.open(BuscadorConceptoPuntosComponent, {
-          data: {
-            title: "Buscador de Clientes",
-          },
-        });
-
-        dialogRef.afterClosed().subscribe((result: any) => {
-          console.log(result);
-          if (result) {
-            this.f.nombreConcepto.setValue(result.descripcionConcepto);
-            this.f.concepto.setValue(result.concepto);
-            this.f.puntosUtilizados.setValue(result.puntosRequeridos);
-          } else {
-            this.f.nombreConcepto.setValue(null);
-            this.f.concepto.setValue(null);
-            this.f.puntosUtilizados.setValue(null);
-          }
-        });
-        break;
-
       default:
         break;
     }
@@ -127,5 +107,45 @@ export class CargarPuntosComponent implements OnInit {
     }
   }
 
-  confirmar() {}
+  confirmar() {
+    const valueFrom = this.filtrosForm.value;
+    const cliente = valueFrom.cliente;
+    const montoOperacion = valueFrom.montoOperacion;
+
+    const data = {
+      cliente,
+      montoOperacion,
+    };
+    console.log(data);
+
+    this.service.cargarPuntos(data).subscribe(
+      (res) => {
+        swal
+          .fire({
+            title: "Éxito!",
+            text: "La carga de puntos se realizo correctamente.",
+            icon: "success",
+            customClass: {
+              confirmButton: "btn btn-success",
+            },
+            buttonsStyling: false,
+          })
+          .then(() => {
+            this.dialogRef.close();
+            this.filtrosForm.reset();
+          });
+      },
+      (err) => {
+        swal.fire({
+          title: "Error!",
+          text: "Error al guardar el registro.",
+          icon: "error",
+          customClass: {
+            confirmButton: "btn btn-info",
+          },
+          buttonsStyling: false,
+        });
+      }
+    );
+  }
 }

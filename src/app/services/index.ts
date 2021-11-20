@@ -1,3 +1,7 @@
+export { ConsultasService } from "./consultas.service";
+
+export { ReporteService } from "./reporte.service";
+
 export { AsignacionPuntosService } from "./asignacion-puntos.service";
 
 export { BolsasService } from "./bolsas.service";

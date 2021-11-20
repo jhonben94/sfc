@@ -30,6 +30,7 @@
                       placeholder="CLIENTE"
                       formControlName="nombreCliente"
                       (click)="buscadores('cliente')"
+                      required
                     />
                     <button
                       mat-button
@@ -49,6 +50,7 @@
                       placeholder="CONCEPTO PUNTOS"
                       formControlName="nombreConcepto"
                       (click)="buscadores('concepto')"
+                      required
                     />
                     <button
                       mat-button
@@ -82,6 +84,7 @@
                     type="button"
                     class="btn btn-primary"
                     (click)="confirmar()"
+                    [disabled]="!filtrosForm.valid"
                   >
                     CONFIRMAR
                   </button>

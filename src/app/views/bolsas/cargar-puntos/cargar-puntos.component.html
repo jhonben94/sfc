@@ -5,7 +5,7 @@
         <div class="card-icon">
           <i class="material-icons">exposure</i>
         </div>
-        <h4 class="card-title"><strong>UTILIZAR PUNTOS</strong></h4>
+        <h4 class="card-title"><strong>CARGAR PUNTOS</strong></h4>
       </div>
 
       <mat-accordion>
@@ -30,6 +30,7 @@
                       placeholder="CLIENTE"
                       formControlName="nombreCliente"
                       (click)="buscadores('cliente')"
+                      required
                     />
                     <button
                       mat-button
@@ -37,6 +38,7 @@
                       mat-stroked-button
                       aria-label="search"
                       (click)="buscadores('cliente')"
+                      required
                     >
                       <mat-icon>search</mat-icon>
                     </button>
@@ -47,6 +49,7 @@
                       matInput
                       placeholder="MONTO"
                       formControlName="montoOperacion"
+                      required
                     />
                   </mat-form-field>
                 </div>
@@ -61,6 +64,7 @@
                     type="button"
                     class="btn btn-primary"
                     (click)="confirmar()"
+                    [disabled]="!filtrosForm.valid"
                   >
                     CONFIRMAR
                   </button>

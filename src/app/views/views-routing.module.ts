@@ -7,6 +7,10 @@ import { ClientesEditComponent } from "./clientes/clientes-edit/clientes-edit.co
 import { ClientesComponent } from "./clientes/clientes.component";
 import { PuntosEditComponent } from "./puntos/puntos-edit/puntos-edit.component";
 import { PuntosComponent } from "./puntos/puntos.component";
+import { ReportBolsaPuntoComponent } from "./reportes/report-bolsa-punto/report-bolsa-punto.component";
+import { ReportClienteComponent } from "./reportes/report-cliente/report-cliente.component";
+import { ReportUsoPuntosComponent } from "./reportes/report-uso-puntos/report-uso-puntos.component";
+import { ReportePuntosComponent } from "./reportes/reporte-puntos/reporte-puntos.component";
 import { VencimientoPuntosEditComponent } from "./vencimiento-puntos/vencimiento-puntos-edit/vencimiento-puntos-edit.component";
 import { VencimientoPuntosComponent } from "./vencimiento-puntos/vencimiento-puntos.component";
 
@@ -14,6 +18,24 @@ export const routes: Routes = [
   {
     path: "",
     children: [
+      {
+        path: "reporte/cliente",
+        component: ReportClienteComponent,
+      },
+      {
+        path: "reporte/bolsa",
+        component: ReportBolsaPuntoComponent,
+      },
+      {
+        path: "reporte/uso-puntos",
+        component: ReportUsoPuntosComponent,
+      },
+
+      {
+        path: "reporte/puntos",
+        component: ReportePuntosComponent,
+      },
+
       {
         path: "clientes",
         component: ClientesComponent,

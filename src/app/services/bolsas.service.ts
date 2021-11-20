@@ -33,4 +33,10 @@ export class BolsasService {
   equivalenciaPuntos(monto) {
     return this.http.get(this.recurosBaseURL + "equivalencia-puntos/" + monto);
   }
+  cargarPuntos(param) {
+    return this.http.post(this.recurosBaseURL + "cargar-puntos/", param);
+  }
+  utilizarPuntos(param) {
+    return this.http.post(this.recurosBaseURL + "usar-puntos/", param);
+  }
 }

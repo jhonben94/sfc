@@ -22,6 +22,10 @@ import { EquivalenciaPuntosComponent } from './bolsas/equivalencia-puntos/equiva
 import { UtilizarPuntosComponent } from './bolsas/utilizar-puntos/utilizar-puntos.component';
 import { BuscadorConceptoPuntosComponent } from './buscadores/buscador-concepto-puntos/buscador-concepto-puntos.component';
 import { CargarPuntosComponent } from './bolsas/cargar-puntos/cargar-puntos.component';
+import { ReportUsoPuntosComponent } from './reportes/report-uso-puntos/report-uso-puntos.component';
+import { ReportBolsaPuntoComponent } from './reportes/report-bolsa-punto/report-bolsa-punto.component';
+import { ReportClienteComponent } from './reportes/report-cliente/report-cliente.component';
+import { ReportePuntosComponent } from './reportes/reporte-puntos/reporte-puntos.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +45,10 @@ import { CargarPuntosComponent } from './bolsas/cargar-puntos/cargar-puntos.comp
     UtilizarPuntosComponent,
     BuscadorConceptoPuntosComponent,
     CargarPuntosComponent,
+    ReportUsoPuntosComponent,
+    ReportBolsaPuntoComponent,
+    ReportClienteComponent,
+    ReportePuntosComponent,
   ],
   imports: [
     CommonModule,

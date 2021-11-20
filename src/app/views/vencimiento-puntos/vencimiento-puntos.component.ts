@@ -152,7 +152,7 @@ export class VencimientoPuntosComponent implements OnInit {
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
           this.isRateLimitReached = false;
-          this.resultsLength = data.totalDatos;
+          this.resultsLength = data.total;
           return data.lista;
         }),
         catchError(() => {

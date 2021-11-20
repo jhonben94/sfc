@@ -177,7 +177,7 @@ export class BolsasComponent implements OnInit {
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
           this.isRateLimitReached = false;
-          this.resultsLength = data.totalDatos;
+          this.resultsLength = data.total;
           return data.lista;
         }),
         catchError(() => {
@@ -335,7 +335,9 @@ export class BolsasComponent implements OnInit {
           data: {},
         });
 
-        dialogRef.afterClosed().subscribe((result: any) => {});
+        dialogRef.afterClosed().subscribe((result: any) => {
+          this.buscar();
+        });
         break;
 
       case "cargar":
@@ -343,7 +345,9 @@ export class BolsasComponent implements OnInit {
           data: {},
         });
 
-        dialogRef.afterClosed().subscribe((result: any) => {});
+        dialogRef.afterClosed().subscribe((result: any) => {
+          this.buscar();
+        });
         break;
 
       default:

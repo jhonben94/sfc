@@ -12,7 +12,9 @@ export class EquivalenciaPuntosComponent implements OnInit {
   puntos: any;
   constructor(private bolsaService: BolsasService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.monto = 0;
+  }
   consultar() {
     this.bolsaService.equivalenciaPuntos(this.monto).subscribe(
       (resp: any) => {

@@ -46,6 +46,19 @@ export const ROUTES: RouteInfo[] = [
     type: "link",
     icontype: "work",
   },
+  {
+    path: "/reporte",
+    title: "Reportes",
+    type: "sub",
+    icontype: "apps",
+    collapse: "components",
+    children: [
+      { path: "cliente", title: "Clientes", ab: "A" },
+      { path: "bolsa", title: "Bolsas por rango", ab: "B" },
+      { path: "uso-puntos", title: "Puntos por Vencer", ab: "C" },
+      { path: "puntos", title: "Uso de Puntos", ab: "D" },
+    ],
+  },
   /* {
     path: "/dashboard",
     title: "Dashboard",

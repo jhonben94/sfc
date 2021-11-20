@@ -5,22 +5,22 @@ import { MatSort } from "@angular/material/sort";
 import { merge, of } from "rxjs";
 import {
   CANTIDAD_PAG_DEFAULT,
-  CANTIDAD_PAG_LIST,
   deleteEmptyData,
-} from "../../utils";
+  formatearFecha,
+} from "../../../utils";
 import { startWith, switchMap, catchError, map } from "rxjs/operators";
-import { ClientesService } from "src/app/services";
+import { ClientesService, ReporteService } from "src/app/services";
 import { MatDialog } from "@angular/material/dialog";
 import swal from "sweetalert2";
 import { Router } from "@angular/router";
+import { BuscadorClienteComponent } from "../../buscadores/buscador-cliente/buscador-cliente.component";
+declare const $: any;
 @Component({
-  selector: "app-clientes",
-  templateUrl: "./clientes.component.html",
-  styleUrls: ["./clientes.component.css"],
+  selector: "app-report-cliente",
+  templateUrl: "./report-cliente.component.html",
+  styleUrls: ["./report-cliente.component.css"],
 })
-export class ClientesComponent implements OnInit {
-  selectedRow: any;
-
+export class ReportClienteComponent implements OnInit {
   /**
    * @type {boolean}
    * @description Flag que maneja el Expansion Panel de filtros
@@ -60,15 +60,9 @@ export class ClientesComponent implements OnInit {
     "cliente",
     "nombre",
     "apellido",
-    "correo",
-    "telefono",
-    "tipoDocumento",
-    "documento",
     "fechaNacimiento",
-    "accion",
   ];
 
-  opcionPagina = CANTIDAD_PAG_LIST;
   /**
    * @type {Array}
    * @description Definicion dinamica de las columnas a ser visualizadas
@@ -77,52 +71,22 @@ export class ClientesComponent implements OnInit {
     {
       matDef: "cliente",
       label: "cliente",
-      descripcion: "CLIENTE",
+      descripcion: "ID",
     },
     {
       matDef: "nombre",
       label: "nombre",
       descripcion: "NOMBRE",
     },
-
     {
       matDef: "apellido",
       label: "apellido",
       descripcion: "APELLIDO",
     },
     {
-      matDef: "telefono",
-      label: "telefono",
-      descripcion: "TELÉFONO",
-    },
-
-    {
-      matDef: "correo",
-      label: "correo",
-      descripcion: "CORREO",
-    },
-    {
-      matDef: "telefono",
-      label: "telefono",
-      descripcion: "TELÉFONO",
-      telefono: true,
-    },
-
-    {
-      matDef: "tipoDocumento",
-      label: "tipoDocumento",
-      descripcion: "TIPO DOCUMENTO",
-      columnaRelacion: "descripcion",
-    },
-    {
-      matDef: "documento",
-      label: "documento",
-      descripcion: "NRO. DOCUMENTO",
-    },
-    {
       matDef: "fechaNacimiento",
       label: "fechaNacimiento",
-      descripcion: "FECHA NAC.",
+      descripcion: "FEC. NACIMIENTO",
     },
   ];
   /**
@@ -136,30 +100,33 @@ export class ClientesComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private service: ClientesService,
+    private router: Router,
     public dialog: MatDialog,
-    private router: Router
+    private exportarService: ReporteService
   ) {
     this.filtrosForm = this.fb.group({
-      descripcion: [""],
+      fechaNacimiento: [""],
       nombre: [""],
       apellido: [""],
-      email: [""],
-      telefono: [""],
-      documento: [""],
-      correo: [""],
-      tipoPersona: [""],
-      fechaNacimiento: [""],
     });
   }
 
   ngOnInit(): void {
-    this.paginator.pageSize = CANTIDAD_PAG_DEFAULT;
+    //this.paginator.pageSize = CANTIDAD_PAG_DEFAULT;
+
+    var mainPanel = document.getElementsByClassName("main-panel")[0];
+    $(".modal").on("shown.bs.modal", function () {
+      mainPanel.classList.add("no-scroll");
+    });
+    $(".modal").on("hidden.bs.modal", function () {
+      mainPanel.classList.remove("no-scroll");
+    });
   }
 
   ngAfterViewInit() {
     // Si se cambia el orden, se vuelve a la primera pag.
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    this.buscar();
+    //this.buscar();
   }
 
   get f() {
@@ -167,44 +134,36 @@ export class ClientesComponent implements OnInit {
   }
 
   buscar() {
-    merge(this.sort.sortChange, this.paginator.page)
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoadingResults = true;
-          const params = {
-            cantidad: this.paginator.pageSize,
-            pagina: this.paginator.pageIndex,
-            orderBy: this.sort.active,
-            orderDir: this.sort.direction,
-            filtros: deleteEmptyData(this.filtrosForm.value),
-          };
+    this.isLoadingResults = true;
 
-          return this.service.listarRecurso(params);
-        }),
-        map((data: any) => {
-          // Flip flag to show that loading has finished.
-          this.isLoadingResults = false;
-          this.isRateLimitReached = false;
-          this.resultsLength = data.total;
-          return data.lista;
-        }),
-        catchError(() => {
-          this.isLoadingResults = false;
-          // Catch if the API has reached its rate limit. Return empty data.
-          this.isRateLimitReached = true;
-          return of([]);
-        })
-      )
-      .subscribe((data) => (this.data = data));
+    const params = {
+      cantidad: 1000000,
+      pagina: 0,
+      orderBy: this.sort.active,
+      orderDir: this.sort.direction,
+      filtros: deleteEmptyData(this.filtrosForm.value),
+    };
+
+    this.service.listarRecurso(params).subscribe(
+      (resp: any) => {
+        this.isLoadingResults = false;
+        this.isRateLimitReached = false;
+        this.data = resp.lista;
+      },
+      (error) => {
+        this.isLoadingResults = false;
+        this.isRateLimitReached = false;
+        this.data = [];
+      }
+    );
   }
 
-  agregar(): void {
-    this.router.navigate(["clientes/agregar"]);
+  openDialog(): void {
+    this.router.navigate(["/servicio/agregar"]);
   }
 
   acciones(data, e) {
-    const id = "cliente";
+    const id = "idServicio";
     const actionType = e.target.getAttribute("data-action-type");
     switch (actionType) {
       case "activar":
@@ -243,16 +202,20 @@ export class ClientesComponent implements OnInit {
             }
           });
         break;
-      case "editar":
-        this.router.navigate(["clientes/modificar", data[id]]);
-        break;
       default:
         break;
     }
   }
+
   mostrarCampo(row, columna) {
     if (columna.relacion) {
       if (row[columna.label] == null) return "";
+      if (Array.isArray(columna.columnaRelacion)) {
+        return this.multipleColumnas(
+          row[columna.label],
+          columna.columnaRelacion
+        );
+      }
       return row[columna.label][columna.columnaRelacion];
     } else {
       if (typeof columna.estados != "undefined") {
@@ -261,19 +224,76 @@ export class ClientesComponent implements OnInit {
           : columna.estados[1];
         return label;
       }
-      if (columna.telefono) {
-        return row.prefijo + " " + row.telefono;
+      if (columna.fecha) {
+        return formatearFecha(new Date(row.fecha));
       }
+      if (columna.cliente) {
+        let lista = JSON.parse(localStorage.getItem("lista-clientes"));
+        const cliente = lista.find((item) => item.idCliente == row.idCliente);
+        return cliente.nombre + "  " + cliente.apellido;
+      }
+      if (columna.factura) {
+        return row.prefijoFactura + " " + row.nroFactura;
+      }
+
       return row[columna.label];
     }
   }
+  multipleColumnas(valor: any, listaCol: any[]) {
+    let valorRetorno = "";
+    for (let index = 0; index < listaCol.length; index++) {
+      const property = listaCol[index];
+      valorRetorno += valor[property] + " ";
+    }
+    return valorRetorno;
+  }
   limpiar() {
     this.filtrosForm.reset();
-    this.paginator.pageIndex = 0;
-    this.buscar();
+    this.data = [];
   }
 
-  onRowClicked(row) {
-    this.selectedRow = row;
+  buscadores(buscador) {
+    let dialogRef = null;
+    switch (buscador) {
+      case "cliente":
+        dialogRef = this.dialog.open(BuscadorClienteComponent, {
+          data: {
+            title: "Buscador de Clientes",
+          },
+        });
+
+        dialogRef.afterClosed().subscribe((result: any) => {
+          console.log(result);
+          if (result) {
+            this.f.nombreCliente.setValue(
+              result.nombre + " " + result.apellido
+            );
+            this.f.idCliente.setValue(result.idPersona);
+          } else {
+            this.f.nombreEmpleado.setValue(null);
+          }
+        });
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  downloadPdf() {
+    this.exportarService.exportPdf(this.data, this.listaColumnas);
+  }
+  downloadExcel() {
+    let lista = [];
+    for (let index = 0; index < this.data.length; index++) {
+      const element = this.data[index];
+      let tempObj = {};
+      for (let jota = 0; jota < this.listaColumnas.length; jota++) {
+        const columnaDef = this.listaColumnas[jota];
+        tempObj[columnaDef.matDef] = this.mostrarCampo(element, columnaDef);
+      }
+      lista.push(tempObj);
+    }
+    this.exportarService.exportExcel(lista, "excel");
   }
 }

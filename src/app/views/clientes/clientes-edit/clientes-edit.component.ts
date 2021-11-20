@@ -129,6 +129,7 @@ export class ClientesEditComponent implements OnInit {
               buttonsStyling: false,
             })
             .then(() => {
+              this.prefijoTelefono = "";
               this.form.reset();
             });
         },
@@ -151,8 +152,8 @@ export class ClientesEditComponent implements OnInit {
     this.router.navigate(["/clientes"]);
   }
   seleccionarPrefijo(codigo) {
+    if (!codigo) return (this.prefijoTelefono = "");
     let pais = this.listaNacionalidades.find((x) => x.codigo == codigo);
-    console.log(pais);
 
     this.prefijoTelefono = pais.prefijoTelefono;
   }
