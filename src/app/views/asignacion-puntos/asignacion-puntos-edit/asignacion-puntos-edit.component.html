@@ -13,42 +13,43 @@
       <form [formGroup]="form" (keydown.enter)="$event.preventDefault()">
         <div class="card-body">
           <div class="row">
-            <mat-form-field class="col-8">
-              <input
-                type="text"
-                matInput
-                placeholder="DESCRIPCION"
-                formControlName="descripcionConcepto"
-              />
-            </mat-form-field>
-
-            <mat-form-field class="col-8">
-              <input
-                type="number"
-                matInput
-                placeholder="PUNTOS REQUERIDOS"
-                formControlName="puntosRequeridos"
-              />
-            </mat-form-field>
-
-            <!-- <div class="col-6">
+            <div class="col-6">
               <mat-form-field class="example-full-width">
                 <input
                   type="number"
                   matInput
-                  placeholder="RANGO INICIAL"
-                  formControlName="rangoInicial"
+                  placeholder="LIMITE INFERIOR"
+                  formControlName="limiteInferior"
                 />
               </mat-form-field>
               <mat-form-field class="example-full-width">
                 <input
                   type="number"
                   matInput
-                  placeholder="RANGO FINAL"
-                  formControlName="rangoFinal"
+                  placeholder="LIMITE SUPERIOR"
+                  formControlName="limiteSuperior"
                 />
               </mat-form-field>
-            </div> -->
+            </div>
+
+            <div class="col-6">
+              <mat-form-field class="example-full-width">
+                <input
+                  type="number"
+                  matInput
+                  placeholder="MONTO EQUIVALENCIA"
+                  formControlName="montoEquivalencia"
+                />
+              </mat-form-field>
+              <mat-form-field class="example-full-width">
+                <input
+                  type="number"
+                  matInput
+                  placeholder="DIAS VIGENCIA"
+                  formControlName="diasVigencia"
+                />
+              </mat-form-field>
+            </div>
           </div>
         </div>
         <div class="card-footer">

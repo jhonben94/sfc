@@ -35,10 +35,10 @@ export const ROUTES: RouteInfo[] = [
     icontype: "radio_button_checked",
   },
   {
-    path: "/vencimiento-puntos",
-    title: "Vencimiento de Puntos",
+    path: "/asignacion-puntos",
+    title: "Asignacion de Puntos",
     type: "link",
-    icontype: "date_range",
+    icontype: "send_and_archive",
   },
   {
     path: "/bolsas",

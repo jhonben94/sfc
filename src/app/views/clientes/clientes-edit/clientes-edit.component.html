@@ -53,7 +53,7 @@
                   type="email"
                   matInput
                   placeholder="CORREO"
-                  formControlName="email"
+                  formControlName="correo"
                   required
                 />
               </mat-form-field>
@@ -61,10 +61,10 @@
             <div class="col-6">
               <mat-form-field>
                 <mat-label>TIPO DOCUMENTO</mat-label>
-                <mat-select formControlName="idTipoDocumento">
+                <mat-select formControlName="tipoDocumento">
                   <mat-option
                     *ngFor="let item of listaTipoDoc"
-                    [value]="item.idTipoDocumento"
+                    [value]="item.codigo"
                   >
                     {{ item.descripcion }}
                   </mat-option>
@@ -110,6 +110,7 @@
           </div>
         </div>
         <div class="card-footer">
+          <div class="row"></div>
           <div class="row">
             <div class="form-group">
               <button

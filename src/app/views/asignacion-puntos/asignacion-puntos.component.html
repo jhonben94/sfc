@@ -3,9 +3,9 @@
     <div class="card">
       <div class="card-header card-header-primary card-header-icon">
         <div class="card-icon">
-          <i class="material-icons">radio_button_checked</i>
+          <i class="material-icons">send_and_archive</i>
         </div>
-        <h4 class="card-title"><strong>CONCEPTO DE PUNTOS</strong></h4>
+        <h4 class="card-title"><strong>ASIGNACION DE PUNTOS</strong></h4>
       </div>
 
       <mat-accordion>
@@ -25,41 +25,40 @@
                 <div class="col-6">
                   <mat-form-field class="example-full-width">
                     <input
-                      type="text"
+                      type="number"
                       matInput
-                      placeholder="DESCRIPCION"
-                      formControlName="descripcionConcepto"
+                      placeholder="LIMITE INFERIOR"
+                      formControlName="limiteInferior"
+                    />
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width">
+                    <input
+                      type="number"
+                      matInput
+                      placeholder="LIMITE SUPERIOR"
+                      formControlName="limiteSuperior"
                     />
                   </mat-form-field>
                 </div>
+
                 <div class="col-6">
                   <mat-form-field class="example-full-width">
                     <input
                       type="number"
                       matInput
-                      placeholder="PUNTOS REQUERIDOS"
-                      formControlName="puntosRequeridos"
+                      placeholder="MONTO EQUIVALENCIA"
+                      formControlName="montoEquivalencia"
+                    />
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width">
+                    <input
+                      type="number"
+                      matInput
+                      placeholder="DIAS VIGENCIA"
+                      formControlName="diasVigencia"
                     />
                   </mat-form-field>
                 </div>
-                <!-- <div class="col-6">
-                  <mat-form-field class="example-full-width">
-                    <input
-                      type="number"
-                      matInput
-                      placeholder="RANGO INICIAL"
-                      formControlName="rangoInicial"
-                    />
-                  </mat-form-field>
-                  <mat-form-field class="example-full-width">
-                    <input
-                      type="number"
-                      matInput
-                      placeholder="RANGO FINAL"
-                      formControlName="rangoFinal"
-                    />
-                  </mat-form-field>
-                </div> -->
               </div>
             </div>
             <div class="card-footer">
@@ -106,7 +105,7 @@
           [dataSource]="data"
           class="example-table"
           matSort
-          matSortActive="conceptoPunto"
+          matSortActive="asignacionPunto"
           matSortDisableClear
           matSortDirection="desc"
         >
@@ -156,10 +155,10 @@
                 >
               </button>
               <!-- <button ngbTooltip="Activar" mat-button>
-                                        <mat-icon color="accent" data-action-type="activar"
-                                          >check_circle</mat-icon
-                                        >
-                                      </button> -->
+                                                <mat-icon color="accent" data-action-type="activar"
+                                                  >check_circle</mat-icon
+                                                >
+                                              </button> -->
             </td>
           </ng-container>
 

@@ -95,3 +95,8 @@ th {
 .mat-sort-header-container {
   justify-content: center !important;
 }
+::ng-deep.my-custom-dialog-class {
+  mat-dialog-container {
+    padding: 0;
+  }
+}

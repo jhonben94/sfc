@@ -28,7 +28,7 @@
                       matInput
                       [matDatepicker]="picker"
                       placeholder="FECHA ASIGNACIÓN"
-                      formControlName="fechaAsignacion"
+                      formControlName="fechaAsignacionPuntos"
                       (click)="picker.open()"
                     />
                     <mat-datepicker-toggle
@@ -43,7 +43,7 @@
                       matInput
                       [matDatepicker]="picker2"
                       placeholder="FECHA CADUCIDAD"
-                      formControlName="fechaCaducidad"
+                      formControlName="fechaVencimientoPuntos"
                       (click)="picker2.open()"
                     />
                     <mat-datepicker-toggle
@@ -88,12 +88,33 @@
               <div class="row">
                 <div class="form-group">
                   <button
-                    class="btn btn-accent"
-                    (click)="agregar()"
-                    mat-raised-button
-                    color="warn"
+                    mat-fab
+                    color="primary"
+                    aria-label="Example icon button with a bookmark icon"
+                    matTooltip="Consultar Equivalencia"
+                    (click)="botonesAccionesBolsa('equivalencia')"
                   >
-                    Agregar
+                    <mat-icon>equalizer</mat-icon>
+                  </button>
+                  <button
+                    style="margin-left: 5px"
+                    mat-fab
+                    color="accent"
+                    aria-label="Example icon button with a bookmark icon"
+                    (click)="botonesAccionesBolsa('utilizar')"
+                    matTooltip="Utilizar Puntos"
+                  >
+                    <mat-icon>exposure</mat-icon>
+                  </button>
+                  <button
+                    style="margin-left: 5px"
+                    mat-fab
+                    color="secondary"
+                    aria-label="Example icon button with a bookmark icon"
+                    (click)="botonesAccionesBolsa('cargar')"
+                    matTooltip="Cargar puntos"
+                  >
+                    <mat-icon>file_upload</mat-icon>
                   </button>
                 </div>
               </div>
@@ -128,7 +149,7 @@
           [dataSource]="data"
           class="example-table"
           matSort
-          matSortActive="idBolsa"
+          matSortActive="bolsaPunto"
           matSortDisableClear
           matSortDirection="desc"
         >

@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  URL_BASE: "http://localhost:4200/assets/fake_data/",
+  URL_BASE: "http://localhost:8085/sfc/api/",
 };

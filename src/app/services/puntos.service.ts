@@ -6,7 +6,7 @@ import { environment } from "src/environments/environment";
   providedIn: "root",
 })
 export class PuntosService {
-  recurosBaseURL: string = environment.URL_BASE + "listar_puntos.json";
+  recurosBaseURL: string = environment.URL_BASE + "concepto-puntos/";
 
   constructor(private http: HttpClient) {}
   activarRecurso(id) {
@@ -23,17 +23,10 @@ export class PuntosService {
     return this.http.delete(this.recurosBaseURL + id);
   }
   obtenerRecurso(id) {
-    return this.http.get(this.recurosBaseURL).pipe(
-      map((r: any) => {
-        let lista = r.lista;
-
-        return lista.find((item) => item.idPunto == id);
-      })
-    );
-    // return this.http.get(this.recurosBaseURL + id);
+    return this.http.get(this.recurosBaseURL + id);
   }
-  listarRecurso(ejemplo) {
-    return this.http.get(this.recurosBaseURL);
+  listarRecurso(params) {
+    return this.http.post(this.recurosBaseURL + "paginado/", params);
 
     // return this.http.get(this.recurosBaseURL, { params: ejemplo });
   }

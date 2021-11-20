@@ -5,8 +5,8 @@ import { environment } from "src/environments/environment";
 @Injectable({
   providedIn: "root",
 })
-export class ClientesService {
-  recurosBaseURL: string = environment.URL_BASE + "clientes/";
+export class AsignacionPuntosService {
+  recurosBaseURL: string = environment.URL_BASE + "asignacion-puntos/";
 
   constructor(private http: HttpClient) {}
   activarRecurso(id) {

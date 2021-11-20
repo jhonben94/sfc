@@ -33,7 +33,7 @@ function checkZero(data) {
   return data;
 }
 export const CANTIDAD_PAG_LIST = [5, 10, 25, 100];
-export const CANTIDAD_PAG_DEFAULT = 10;
+export const CANTIDAD_PAG_DEFAULT = 5;
 export const CARACTER_MINIMO_AUTOCOMPLETE = 3;
 export const RESULTADO_AUTOCOMPLETE = 50;
 export const MIN_ROWS_TEXT_AREA = 10;
@@ -52,3 +52,27 @@ export const formatearHora = (hora) => {
 };
 
 export const fechaDatePicker = (fecha: string) => fecha.replace("-", "/");
+
+export function formatDateInsert(date) {
+  console.log(date);
+
+  var day = date.getDate() + "";
+  var month = date.getMonth() + 1 + "";
+  var year = date.getFullYear() + "";
+  var hour = date.getHours() + "";
+  var minutes = date.getMinutes() + "";
+  var seconds = date.getSeconds() + "";
+
+  day = checkZero(day);
+  month = checkZero(month);
+  year = checkZero(year);
+  hour = checkZero(hour);
+  minutes = checkZero(minutes);
+  seconds = checkZero(seconds);
+  return year + "-" + month + "-" + day;
+}
+export function parseDate(input) {
+  var parts = input.match(/(\d+)/g);
+  // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
+  return new Date(parts[0], parts[1] - 1, parts[2]); // months are 0-based
+}

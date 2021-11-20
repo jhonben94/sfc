@@ -9,20 +9,16 @@ import {
   deleteEmptyData,
 } from "../../utils";
 import { startWith, switchMap, catchError, map } from "rxjs/operators";
-import { BolsasService, VencimientoPuntosService } from "src/app/services";
+import { AsignacionPuntosService, PuntosService } from "src/app/services";
 import { MatDialog } from "@angular/material/dialog";
 import swal from "sweetalert2";
 import { Router } from "@angular/router";
-import { BuscadorClienteComponent } from "../buscadores/buscador-cliente/buscador-cliente.component";
-import { EquivalenciaPuntosComponent } from "./equivalencia-puntos/equivalencia-puntos.component";
-import { UtilizarPuntosComponent } from "./utilizar-puntos/utilizar-puntos.component";
-import { CargarPuntosComponent } from "./cargar-puntos/cargar-puntos.component";
 @Component({
-  selector: "app-bolsas",
-  templateUrl: "./bolsas.component.html",
-  styleUrls: ["./bolsas.component.css"],
+  selector: "app-asignacion-puntos",
+  templateUrl: "./asignacion-puntos.component.html",
+  styleUrls: ["./asignacion-puntos.component.css"],
 })
-export class BolsasComponent implements OnInit {
+export class AsignacionPuntosComponent implements OnInit {
   selectedRow: any;
 
   /**
@@ -61,13 +57,12 @@ export class BolsasComponent implements OnInit {
    * @description Definicion de las columnas a ser visualizadas
    */
   displayedColumns: string[] = [
-    "bolsaPunto",
-    "fechaAsignacionPuntos",
-    "fechaVencimientoPuntos",
-    "puntajeUtilizado",
-    "saldoPuntos",
-    "montoOperacion",
-    "cliente",
+    "asignacionPunto",
+    "limiteInferior",
+    "limiteSuperior",
+    "montoEquivalencia",
+    "diasVigencia",
+    "accion",
   ];
 
   opcionPagina = CANTIDAD_PAG_LIST;
@@ -77,42 +72,29 @@ export class BolsasComponent implements OnInit {
    */
   listaColumnas: any = [
     {
-      matDef: "bolsaPunto",
-      label: "bolsaPunto",
-      descripcion: "BOLSA",
+      matDef: "asignacionPunto",
+      label: "asignacionPunto",
+      descripcion: "ID",
     },
     {
-      matDef: "fechaAsignacionPuntos",
-      label: "fechaAsignacionPuntos",
-      descripcion: "FECHA ASIGNACION",
-    },
-
-    {
-      matDef: "fechaVencimientoPuntos",
-      label: "fechaVencimientoPuntos",
-      descripcion: "FECHA VENCIMIENTO",
+      matDef: "limiteInferior",
+      label: "limiteInferior",
+      descripcion: "LIMITE INFERIOR",
     },
     {
-      matDef: "puntajeUtilizado",
-      label: "puntajeUtilizado",
-      descripcion: "PUNTAJE UTILIZADO",
+      matDef: "limiteSuperior",
+      label: "limiteSuperior",
+      descripcion: "LIMITE SUPERIOR",
     },
     {
-      matDef: "saldoPuntos",
-      label: "saldoPuntos",
-      descripcion: "SALDO",
+      matDef: "montoEquivalencia",
+      label: "montoEquivalencia",
+      descripcion: "MONTO EQUIVALENCIA",
     },
     {
-      matDef: "montoOperacion",
-      label: "montoOperacion",
-      descripcion: "MONTO",
-    },
-    {
-      matDef: "cliente",
-      label: "cliente",
-      descripcion: "CLIENTE",
-      relacion: true,
-      columnaRelacion: ["nombre", "apellido"],
+      matDef: "diasVigencia",
+      label: "diasVigencia",
+      descripcion: "DIAS VIGENCIA",
     },
   ];
   /**
@@ -125,18 +107,20 @@ export class BolsasComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private service: BolsasService,
+    private service: AsignacionPuntosService,
     public dialog: MatDialog,
     private router: Router
   ) {
     this.filtrosForm = this.fb.group({
-      fechaAsignacionPuntos: [""],
-      fechaVencimientoPuntos: [""],
-      puntajeUtilizado: [""],
-      saldoPuntos: [""],
-      montoOperacion: [""],
-      cliente: [""],
-      nombreCliente: [""],
+      /* "asignacionPunto",
+      "limiteInferior",
+      "limiteSuperior",
+      "montoEquivalencia",
+      "diasVigencia", */
+      limiteInferior: [""],
+      limiteSuperior: [""],
+      montoEquivalencia: [""],
+      diasVigencia: [""],
     });
   }
 
@@ -160,16 +144,12 @@ export class BolsasComponent implements OnInit {
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
-          let filtros = deleteEmptyData(this.filtrosForm.value);
-          delete filtros.nombreCliente;
-          console.log(filtros);
-
           const params = {
             cantidad: this.paginator.pageSize,
             pagina: this.paginator.pageIndex,
             orderBy: this.sort.active,
             orderDir: this.sort.direction,
-            filtros: filtros,
+            filtros: deleteEmptyData(this.filtrosForm.value),
           };
           return this.service.listarRecurso(params);
         }),
@@ -191,11 +171,11 @@ export class BolsasComponent implements OnInit {
   }
 
   agregar(): void {
-    this.router.navigate(["vencimiento-puntos/agregar"]);
+    this.router.navigate(["asignacion-puntos/agregar"]);
   }
 
   acciones(data, e) {
-    const id = "idVencimientoPunto";
+    const id = "asignacionPunto";
     const actionType = e.target.getAttribute("data-action-type");
     switch (actionType) {
       case "activar":
@@ -235,7 +215,7 @@ export class BolsasComponent implements OnInit {
           });
         break;
       case "editar":
-        this.router.navigate(["vencimiento-puntos/modificar", data[id]]);
+        this.router.navigate(["asignacion-puntos/modificar", data[id]]);
         break;
       default:
         break;
@@ -244,12 +224,6 @@ export class BolsasComponent implements OnInit {
   mostrarCampo(row, columna) {
     if (columna.relacion) {
       if (row[columna.label] == null) return "";
-      if (Array.isArray(columna.columnaRelacion)) {
-        return this.multipleColumnas(
-          row[columna.label],
-          columna.columnaRelacion
-        );
-      }
       return row[columna.label][columna.columnaRelacion];
     } else {
       if (typeof columna.estados != "undefined") {
@@ -260,15 +234,6 @@ export class BolsasComponent implements OnInit {
       }
       return row[columna.label];
     }
-  }
-
-  multipleColumnas(valor: any, listaCol: any[]) {
-    let valorRetorno = "";
-    for (let index = 0; index < listaCol.length; index++) {
-      const property = listaCol[index];
-      valorRetorno += valor[property] + " ";
-    }
-    return valorRetorno;
   }
   limpiar() {
     this.filtrosForm.reset();
@@ -289,65 +254,5 @@ export class BolsasComponent implements OnInit {
 
   onRowClicked(row) {
     this.selectedRow = row;
-  }
-
-  buscadores(buscador) {
-    let dialogRef = null;
-    switch (buscador) {
-      case "cliente":
-        dialogRef = this.dialog.open(BuscadorClienteComponent, {
-          data: {
-            title: "Buscador de Clientes",
-          },
-        });
-
-        dialogRef.afterClosed().subscribe((result: any) => {
-          console.log(result);
-          if (result) {
-            this.f.nombreCliente.setValue(
-              result.nombre + " " + result.apellido
-            );
-            this.f.cliente.setValue(result.cliente);
-          } else {
-            this.f.nombreCliente.setValue(null);
-            this.f.cliente.setValue(null);
-          }
-        });
-        break;
-
-      default:
-        break;
-    }
-  }
-  botonesAccionesBolsa(key) {
-    let dialogRef = null;
-    switch (key) {
-      case "equivalencia":
-        dialogRef = this.dialog.open(EquivalenciaPuntosComponent, {
-          data: {},
-        });
-
-        dialogRef.afterClosed().subscribe((result: any) => {});
-        break;
-
-      case "utilizar":
-        dialogRef = this.dialog.open(UtilizarPuntosComponent, {
-          data: {},
-        });
-
-        dialogRef.afterClosed().subscribe((result: any) => {});
-        break;
-
-      case "cargar":
-        dialogRef = this.dialog.open(CargarPuntosComponent, {
-          data: {},
-        });
-
-        dialogRef.afterClosed().subscribe((result: any) => {});
-        break;
-
-      default:
-        break;
-    }
   }
 }

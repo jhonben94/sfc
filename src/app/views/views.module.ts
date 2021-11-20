@@ -16,6 +16,12 @@ import { VencimientoPuntosComponent } from './vencimiento-puntos/vencimiento-pun
 import { VencimientoPuntosEditComponent } from './vencimiento-puntos/vencimiento-puntos-edit/vencimiento-puntos-edit.component';
 import { BuscadorClienteComponent } from './buscadores/buscador-cliente/buscador-cliente.component';
 import { BolsasComponent } from './bolsas/bolsas.component';
+import { AsignacionPuntosComponent } from './asignacion-puntos/asignacion-puntos.component';
+import { AsignacionPuntosEditComponent } from './asignacion-puntos/asignacion-puntos-edit/asignacion-puntos-edit.component';
+import { EquivalenciaPuntosComponent } from './bolsas/equivalencia-puntos/equivalencia-puntos.component';
+import { UtilizarPuntosComponent } from './bolsas/utilizar-puntos/utilizar-puntos.component';
+import { BuscadorConceptoPuntosComponent } from './buscadores/buscador-concepto-puntos/buscador-concepto-puntos.component';
+import { CargarPuntosComponent } from './bolsas/cargar-puntos/cargar-puntos.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +35,12 @@ import { BolsasComponent } from './bolsas/bolsas.component';
     VencimientoPuntosEditComponent,
     BuscadorClienteComponent,
     BolsasComponent,
+    AsignacionPuntosComponent,
+    AsignacionPuntosEditComponent,
+    EquivalenciaPuntosComponent,
+    UtilizarPuntosComponent,
+    BuscadorConceptoPuntosComponent,
+    CargarPuntosComponent,
   ],
   imports: [
     CommonModule,

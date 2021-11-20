@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ClientesService, TipoDocumentoService } from "src/app/services";
 import { OtrosService } from "src/app/services/otros.service";
-import { formatearFecha } from "src/app/utils";
+import { formatDateInsert, formatearFecha, parseDate } from "src/app/utils";
 import swal from "sweetalert2";
 @Component({
   selector: "app-clientes-edit",
@@ -30,11 +30,11 @@ export class ClientesEditComponent implements OnInit {
     this.form = this.fb.group({
       nombre: ["", Validators.required],
       apellido: ["", Validators.required],
-      email: ["", [Validators.required, Validators.email]],
+      correo: ["", [Validators.required, Validators.email]],
       telefono: ["", Validators.required],
       nacionalidad: ["", Validators.required],
       documento: ["", Validators.required],
-      idTipoDocumento: ["", Validators.required],
+      tipoDocumento: ["", Validators.required],
       fechaNacimiento: ["", Validators.required],
     });
   }
@@ -45,34 +45,43 @@ export class ClientesEditComponent implements OnInit {
       this.titulo = "MODIFICAR CLIENTE";
       //obtener datos de la persona.
       // settear en el formulario.
-    } else {
-      this.titulo = "AGREGAR CLIENTE";
-    }
-    this.tipoDocumentoService.listarRecurso({}).subscribe((res: any) => {
-      this.listaTipoDoc = res.lista;
-      this.nacionalidadService.listarNac().subscribe((resp: any) => {
-        this.listaNacionalidades = resp;
+      this.tipoDocumentoService.listarRecurso({}).subscribe((res: any) => {
+        this.listaTipoDoc = res.lista;
+        this.nacionalidadService.listarNac().subscribe((resp: any) => {
+          this.listaNacionalidades = resp;
 
-        this.service.obtenerRecurso(this.id).subscribe((r: any) => {
-          this.f.nombre.setValue(r.nombre);
-          this.f.apellido.setValue(r.apellido);
-          this.f.fechaNacimiento.setValue(new Date(r.fechaNacimiento));
-          this.f.email.setValue(r.email);
-          this.f.idTipoDocumento.setValue(r.idTipoDocumento.idTipoDocumento);
-          this.f.nacionalidad.setValue(r.nacionalidad);
-          this.seleccionarPrefijo(r.nacionalidad);
-          this.f.documento.setValue(r.documento);
-          this.f.telefono.setValue(r.telefono);
+          this.service.obtenerRecurso(this.id).subscribe((res: any) => {
+            const r = res.dato;
+            console.log(r);
+
+            this.f.nombre.setValue(r.nombre);
+            this.f.apellido.setValue(r.apellido);
+            this.f.fechaNacimiento.setValue(parseDate(r.fechaNacimiento));
+            this.f.correo.setValue(r.correo);
+            this.f.tipoDocumento.setValue(r.tipoDocumento);
+            this.f.nacionalidad.setValue(r.nacionalidad);
+            this.seleccionarPrefijo(r.nacionalidad);
+            this.f.documento.setValue(r.documento);
+            this.f.telefono.setValue(r.telefono);
+          });
         });
       });
-    });
+    } else {
+      this.titulo = "AGREGAR CLIENTE";
+
+      this.tipoDocumentoService.listarRecurso({}).subscribe((res: any) => {
+        this.listaTipoDoc = res.lista;
+        this.nacionalidadService.listarNac().subscribe((resp: any) => {
+          this.listaNacionalidades = resp;
+        });
+      });
+    }
   }
 
   confirmar() {
     let valorForm = this.form.value;
-
-    valorForm.fechaNacimiento = formatearFecha(valorForm.fechaNacimiento);
-
+    valorForm.prefijo = this.prefijoTelefono;
+    valorForm.fechaNacimiento = formatDateInsert(valorForm.fechaNacimiento);
     console.log(valorForm);
 
     if (this.id) {
@@ -90,6 +99,8 @@ export class ClientesEditComponent implements OnInit {
             })
             .then(() => {
               this.form.reset();
+              this.prefijoTelefono = "";
+              this.router.navigate(["clientes/"]);
             });
         },
         (err) => {

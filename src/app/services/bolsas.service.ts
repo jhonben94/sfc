@@ -6,7 +6,7 @@ import { environment } from "src/environments/environment";
   providedIn: "root",
 })
 export class BolsasService {
-  recurosBaseURL: string = environment.URL_BASE + "lista_bolsas.json";
+  recurosBaseURL: string = environment.URL_BASE + "bolsa/";
 
   constructor(private http: HttpClient) {}
   activarRecurso(id) {
@@ -23,18 +23,14 @@ export class BolsasService {
     return this.http.delete(this.recurosBaseURL + id);
   }
   obtenerRecurso(id) {
-    return this.http.get(this.recurosBaseURL).pipe(
-      map((r: any) => {
-        let lista = r.lista;
-
-        return lista.find((item) => item.idCliente == id);
-      })
-    );
-    // return this.http.get(this.recurosBaseURL + id);
+    return this.http.get(this.recurosBaseURL + id);
   }
-  listarRecurso(ejemplo) {
-    return this.http.get(this.recurosBaseURL);
+  listarRecurso(params) {
+    return this.http.post(this.recurosBaseURL + "paginado/", params);
 
     // return this.http.get(this.recurosBaseURL, { params: ejemplo });
+  }
+  equivalenciaPuntos(monto) {
+    return this.http.get(this.recurosBaseURL + "equivalencia-puntos/" + monto);
   }
 }

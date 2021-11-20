@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
+  AsignacionPuntosService,
   ClientesService,
   PuntosService,
   TipoDocumentoService,
@@ -10,23 +11,25 @@ import { OtrosService } from "src/app/services/otros.service";
 import { formatearFecha } from "src/app/utils";
 import swal from "sweetalert2";
 @Component({
-  selector: "app-puntos-edit",
-  templateUrl: "./puntos-edit.component.html",
-  styleUrls: ["./puntos-edit.component.css"],
+  selector: "app-asignacion-puntos-edit",
+  templateUrl: "./asignacion-puntos-edit.component.html",
+  styleUrls: ["./asignacion-puntos-edit.component.css"],
 })
-export class PuntosEditComponent implements OnInit {
+export class AsignacionPuntosEditComponent implements OnInit {
   form: FormGroup;
   id: any;
   titulo: any;
   constructor(
     private fb: FormBuilder,
-    private service: PuntosService,
+    private service: AsignacionPuntosService,
     private route: ActivatedRoute,
     private router: Router
   ) {
     this.form = this.fb.group({
-      descripcionConcepto: ["", Validators.required],
-      puntosRequeridos: ["", Validators.required],
+      limiteInferior: ["", Validators.required],
+      limiteSuperior: ["", Validators.required],
+      montoEquivalencia: ["", Validators.required],
+      diasVigencia: ["", Validators.required],
     });
   }
 
@@ -39,8 +42,10 @@ export class PuntosEditComponent implements OnInit {
 
       this.service.obtenerRecurso(this.id).subscribe((res: any) => {
         const r = res.dato;
-        this.f.descripcionConcepto.setValue(r.descripcionConcepto);
-        this.f.puntosRequeridos.setValue(r.puntosRequeridos);
+        this.f.limiteInferior.setValue(r.limiteInferior);
+        this.f.limiteSuperior.setValue(r.limiteSuperior);
+        this.f.montoEquivalencia.setValue(r.montoEquivalencia);
+        this.f.diasVigencia.setValue(r.diasVigencia);
       });
     } else {
       this.titulo = "AGREGAR CONCEPTO DE PUNTOS";
@@ -65,7 +70,7 @@ export class PuntosEditComponent implements OnInit {
             })
             .then(() => {
               this.form.reset();
-              this.router.navigate(["puntos/"]);
+              this.router.navigate(["asignacion-puntos/"]);
             });
         },
         (err) => {
@@ -113,7 +118,7 @@ export class PuntosEditComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigate(["/puntos"]);
+    this.router.navigate(["/asignacion-puntos"]);
   }
 
   get f() {

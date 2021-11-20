@@ -57,11 +57,9 @@ export class PuntosComponent implements OnInit {
    * @description Definicion de las columnas a ser visualizadas
    */
   displayedColumns: string[] = [
-    "idPunto",
-    "concepto",
+    "conceptoPunto",
+    "descripcionConcepto",
     "puntosRequeridos",
-    "rangoInicial",
-    "rangoFinal",
     "accion",
   ];
 
@@ -72,30 +70,19 @@ export class PuntosComponent implements OnInit {
    */
   listaColumnas: any = [
     {
-      matDef: "idPunto",
-      label: "idPunto",
-      descripcion: "PUNTO",
+      matDef: "conceptoPunto",
+      label: "conceptoPunto",
+      descripcion: "ID",
     },
     {
-      matDef: "concepto",
-      label: "concepto",
-      descripcion: "CONCEPTO",
+      matDef: "descripcionConcepto",
+      label: "descripcionConcepto",
+      descripcion: "DESCRIPCION",
     },
-
     {
       matDef: "puntosRequeridos",
       label: "puntosRequeridos",
       descripcion: "PUNTOS REQUERIDOS",
-    },
-    {
-      matDef: "rangoInicial",
-      label: "rangoInicial",
-      descripcion: "RANGO INICIAL",
-    },
-    {
-      matDef: "rangoFinal",
-      label: "rangoFinal",
-      descripcion: "RANGO FINAL",
     },
   ];
   /**
@@ -113,10 +100,8 @@ export class PuntosComponent implements OnInit {
     private router: Router
   ) {
     this.filtrosForm = this.fb.group({
-      concepto: [""],
+      descripcionConcepto: [""],
       puntosRequeridos: [""],
-      rangoInicial: [""],
-      rangoFinal: [""],
     });
   }
 
@@ -142,11 +127,10 @@ export class PuntosComponent implements OnInit {
           this.isLoadingResults = true;
           const params = {
             cantidad: this.paginator.pageSize,
-            inicio: this.retornaInicio(),
+            pagina: this.paginator.pageIndex,
             orderBy: this.sort.active,
             orderDir: this.sort.direction,
-            like: "S",
-            ejemplo: JSON.stringify(deleteEmptyData(this.filtrosForm.value)),
+            filtros: deleteEmptyData(this.filtrosForm.value),
           };
           return this.service.listarRecurso(params);
         }),
@@ -172,7 +156,7 @@ export class PuntosComponent implements OnInit {
   }
 
   acciones(data, e) {
-    const id = "idPunto";
+    const id = "conceptoPunto";
     const actionType = e.target.getAttribute("data-action-type");
     switch (actionType) {
       case "activar":

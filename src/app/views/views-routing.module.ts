@@ -1,5 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { AsignacionPuntosEditComponent } from "./asignacion-puntos/asignacion-puntos-edit/asignacion-puntos-edit.component";
+import { AsignacionPuntosComponent } from "./asignacion-puntos/asignacion-puntos.component";
 import { BolsasComponent } from "./bolsas/bolsas.component";
 import { ClientesEditComponent } from "./clientes/clientes-edit/clientes-edit.component";
 import { ClientesComponent } from "./clientes/clientes.component";
@@ -53,6 +55,19 @@ export const routes: Routes = [
       {
         path: "bolsas",
         component: BolsasComponent,
+      },
+      {
+        path: "asignacion-puntos",
+        component: AsignacionPuntosComponent,
+      },
+      {
+        path: "asignacion-puntos/agregar",
+        component: AsignacionPuntosEditComponent,
+      },
+
+      {
+        path: "asignacion-puntos/modificar/:id",
+        component: AsignacionPuntosEditComponent,
       },
     ],
   },

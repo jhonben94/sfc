@@ -1,0 +1,40 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header card-header-primary card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">equalizer</i>
+        </div>
+        <h4 class="card-title"><strong>EQUIVALENCIA DE PUNTOS</strong></h4>
+      </div>
+      <div class="card-body">
+        <mat-form-field class="example-full-width">
+          <input
+            type="number"
+            matInput
+            placeholder="MONTO A CONSULTAR"
+            [(ngModel)]="monto"
+          />
+        </mat-form-field>
+
+        <span
+          ><strong>Cantidad De Puntos: {{ puntos }}</strong></span
+        >
+      </div>
+      <div class="card-footer">
+        <div class="row"></div>
+        <div class="row">
+          <div class="form-group">
+            <button
+              class="btn btn-accent"
+              mat-raised-button
+              (click)="consultar()"
+            >
+              Consultar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

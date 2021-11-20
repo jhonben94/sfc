@@ -57,12 +57,12 @@ export class ClientesComponent implements OnInit {
    * @description Definicion de las columnas a ser visualizadas
    */
   displayedColumns: string[] = [
-    "idCliente",
+    "cliente",
     "nombre",
     "apellido",
-    "email",
+    "correo",
     "telefono",
-    "idTipoDocumento",
+    "tipoDocumento",
     "documento",
     "fechaNacimiento",
     "accion",
@@ -75,8 +75,8 @@ export class ClientesComponent implements OnInit {
    */
   listaColumnas: any = [
     {
-      matDef: "idCliente",
-      label: "idCliente",
+      matDef: "cliente",
+      label: "cliente",
       descripcion: "CLIENTE",
     },
     {
@@ -97,21 +97,21 @@ export class ClientesComponent implements OnInit {
     },
 
     {
-      matDef: "email",
-      label: "email",
+      matDef: "correo",
+      label: "correo",
       descripcion: "CORREO",
     },
     {
       matDef: "telefono",
       label: "telefono",
       descripcion: "TELÉFONO",
+      telefono: true,
     },
 
     {
-      matDef: "idTipoDocumento",
-      label: "idTipoDocumento",
+      matDef: "tipoDocumento",
+      label: "tipoDocumento",
       descripcion: "TIPO DOCUMENTO",
-      relacion: true,
       columnaRelacion: "descripcion",
     },
     {
@@ -174,12 +174,12 @@ export class ClientesComponent implements OnInit {
           this.isLoadingResults = true;
           const params = {
             cantidad: this.paginator.pageSize,
-            inicio: this.retornaInicio(),
+            pagina: this.paginator.pageIndex,
             orderBy: this.sort.active,
             orderDir: this.sort.direction,
-            like: "S",
-            ejemplo: JSON.stringify(deleteEmptyData(this.filtrosForm.value)),
+            filtros: deleteEmptyData(this.filtrosForm.value),
           };
+
           return this.service.listarRecurso(params);
         }),
         map((data: any) => {
@@ -204,7 +204,7 @@ export class ClientesComponent implements OnInit {
   }
 
   acciones(data, e) {
-    const id = "idCliente";
+    const id = "cliente";
     const actionType = e.target.getAttribute("data-action-type");
     switch (actionType) {
       case "activar":
@@ -261,24 +261,16 @@ export class ClientesComponent implements OnInit {
           : columna.estados[1];
         return label;
       }
+      if (columna.telefono) {
+        return row.prefijo + " " + row.telefono;
+      }
       return row[columna.label];
     }
   }
   limpiar() {
     this.filtrosForm.reset();
+    this.paginator.pageIndex = 0;
     this.buscar();
-  }
-  retornaInicio() {
-    const cantidad = this.paginator.pageSize;
-    let inicio: any = this.paginator.pageIndex;
-
-    if (this.paginator.pageIndex > 0) {
-      return (
-        cantidad *
-        (0 == this.paginator.pageIndex ? 1 : this.paginator.pageIndex)
-      );
-    }
-    return inicio;
   }
 
   onRowClicked(row) {

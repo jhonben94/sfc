@@ -61,12 +61,12 @@ export class BuscadorClienteComponent implements OnInit {
    * @description Definicion de las columnas a ser visualizadas
    */
   displayedColumns: string[] = [
-    "idCliente",
+    "cliente",
     "nombre",
     "apellido",
-    "email",
+    "correo",
     "telefono",
-    "idTipoDocumento",
+    "tipoDocumento",
     "documento",
     "fechaNacimiento",
   ];
@@ -78,8 +78,8 @@ export class BuscadorClienteComponent implements OnInit {
    */
   listaColumnas: any = [
     {
-      matDef: "idCliente",
-      label: "idCliente",
+      matDef: "cliente",
+      label: "cliente",
       descripcion: "CLIENTE",
     },
     {
@@ -100,8 +100,8 @@ export class BuscadorClienteComponent implements OnInit {
     },
 
     {
-      matDef: "email",
-      label: "email",
+      matDef: "correo",
+      label: "correo",
       descripcion: "CORREO",
     },
     {
@@ -111,11 +111,9 @@ export class BuscadorClienteComponent implements OnInit {
     },
 
     {
-      matDef: "idTipoDocumento",
-      label: "idTipoDocumento",
+      matDef: "tipoDocumento",
+      label: "tipoDocumento",
       descripcion: "TIPO DOCUMENTO",
-      relacion: true,
-      columnaRelacion: "descripcion",
     },
     {
       matDef: "documento",
@@ -148,10 +146,9 @@ export class BuscadorClienteComponent implements OnInit {
       descripcion: [""],
       nombre: [""],
       apellido: [""],
-      email: [""],
+      correo: [""],
       telefono: [""],
       documento: [""],
-      correo: [""],
       tipoPersona: [""],
       fechaNacimiento: [""],
     });
@@ -179,11 +176,10 @@ export class BuscadorClienteComponent implements OnInit {
           this.isLoadingResults = true;
           const params = {
             cantidad: this.paginator.pageSize,
-            inicio: this.retornaInicio(),
+            pagina: this.paginator.pageIndex,
             orderBy: this.sort.active,
             orderDir: this.sort.direction,
-            like: "S",
-            ejemplo: JSON.stringify(deleteEmptyData(this.filtrosForm.value)),
+            filtros: deleteEmptyData(this.filtrosForm.value),
           };
           return this.service.listarRecurso(params);
         }),
